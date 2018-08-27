@@ -1,0 +1,18 @@
+{
+  "name": "tree-directory",
+  "version": "1.0.0",
+  "description": "Create a json with directory data",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "directory",
+    "tree"
+  ],
+  "author": "Misael Zurdo",
+  "license": "MIT",
+  "dependencies": {
+    "defaults": "^1.0.3"
+  }
+}
