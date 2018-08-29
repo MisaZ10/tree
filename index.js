@@ -18,7 +18,6 @@ const constants = {
   DIRECTORY: 'directory',
   FILE: 'file'
 }
-
 function dirTree (path, options, myLevel) {
   options = defaults(options, {
     level: 20,
@@ -75,9 +74,46 @@ function handleFatalError (err) {
   console.error(`${chalk.red('[fatal error]')} ${err.message}`)
   process.exit(1)
 }
+function createPrefix(item, prefix, length, index) {
+  return prefix + '└── ' + item.name
+}
+function createTree(children, prefix) {
+  let tree = ''
+  const max = children.length - 1
+  children.forEach(({ type, name, children }, index) => {
+    const isDirectory = type === constants.DIRECTORY
+    const isFile = type === constants.FILE
+    let line
+    if (name.charAt(0) == '.') {
+      return;
+    }
+    if (index === max) {
+      line = '└── ' + name + '\n'
+      if (isDirectory) {
+        tree += prefix + chalk.green(line)
+        return tree += createTree(children , prefix + '    ');
+      }
+      if(isFile) {
+        return tree += prefix + chalk.blue(line)
+      }
+      return tree += line
+    }
+    line = '├── ' + name + '\n'
+    if (isDirectory) {
+      tree += prefix + chalk.green(line)
+      return tree += createTree(children, prefix + '│   ');
+    }
+    return tree += prefix + chalk.blue(line)
+  })
+  return tree
+}
+
 function showTree (path, option) {
   const dirJson = dirTree(path, option)
+  let tree = `${chalk.green(dirJson.name)}` + '\n'
+  return tree + createTree(dirJson.children, ' ')
 }
+
 process.on('uncaughtException', handleFatalError)
 process.on('unhandledRejection', handleFatalError)
 
