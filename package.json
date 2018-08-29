@@ -4,7 +4,8 @@
   "description": "Create a json with directory data",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "lint-fix": "standard --fix",
+    "lint": "standard"
   },
   "keywords": [
     "directory",
@@ -13,6 +14,10 @@
   "author": "Misael Zurdo",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.1",
     "defaults": "^1.0.3"
+  },
+  "devDependencies": {
+    "standard": "^12.0.0"
   }
 }
