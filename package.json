@@ -1,6 +1,6 @@
 {
   "name": "kigi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create a json with directory data or create a tree in string",
   "main": "index.js",
   "scripts": {
