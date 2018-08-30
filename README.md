@@ -60,5 +60,7 @@ You can generate a json
 }
   ```
 Or you can generate a tree string
+
 ![](tree.jpeg)
+
 Try node test/test.js
