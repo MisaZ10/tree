@@ -45,9 +45,12 @@ function dirTree (path, options, myLevel) {
   }
 
   item.size = stats.size
-	if (stats.isSymbolicLink()) {
-		item.isSymbolicLink = true
+	item.isSymbolicLink = stats.isSymbolicLink()
+	item.createAt = stats.birthtime
+	item.updateAt = stats.mtime
+	if (item.isSymbolicLink) {
 		item.realPath = realPath(path)
+		return item
 	}
   if (stats.isFile() && !onlyDir) {
     const ext = getExt(path)
@@ -57,7 +60,7 @@ function dirTree (path, options, myLevel) {
     return item
   }
   if (stats.isDirectory()) {
-    let dirData = getDirData(path)
+		let dirData = getDirData(path)
     if (dirData === null) return false
     const level = myLevel + 1
     item.children = dirData
@@ -74,9 +77,7 @@ function handleFatalError (err) {
   console.error(`${chalk.red('[fatal error]')} ${err.message}`)
   process.exit(1)
 }
-function createPrefix(item, prefix, length, index) {
-  return prefix + '└── ' + item.name
-}
+
 function createTree(children, prefix) {
   let tree = ''
   const max = children.length - 1
