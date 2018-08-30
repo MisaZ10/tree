@@ -43,7 +43,7 @@ function dirTree (path, options, myLevel) {
 
   if (exclude) {
     const excludes = isRegExp(exclude) ? [exclude] : exclude
-    if (excludes.some((exclusion) => exclusion.test(path))) {
+    if (excludes.some((exclusion) => exclusion.test(name))) {
       return false
     }
   }

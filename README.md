@@ -1,6 +1,15 @@
 # Kigi -> Tree directory
+```
+ npm i -s kigi
+```
 You can generate a json
 ```
+const {
+  dirTree
+} = require('kigi')
+const tree = showTree(path, options)
+console.log(tree)
+
 { 
   path: '/path/tree-directory/test/levels',
   name: 'levels',
@@ -60,8 +69,31 @@ You can generate a json
 }
   ```
 Or you can generate a tree string
-
+```
+    const {
+    showTree
+    } = require('kigi')
+    const options = {
+    showHiddenFiles: true,
+    extensions: /txt/
+    }
+    const tree = showTree(path, options)
+    console.log(tree)
+```
 ![](tree.jpeg)
+
+## Options 
+```
+options = {
+    level: 20 // depth option, default 20
+    onlyDir: false // Show only directories default false
+    showHiddenFiles: false // Show files and folder that start with '.', default false
+    exclude: /privatePath/ or [/privatePath/, /git/] // Excludes files or directories, default null
+    extensions: /txt|png/ // show files only the extensions is txt or png, default null
+}
+```
+
+### The options can change the size of folder !
 
 Try node test/test.js
 
