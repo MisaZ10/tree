@@ -1,7 +1,7 @@
 {
   "name": "tree-directory",
   "version": "1.0.0",
-  "description": "Create a json with directory data",
+  "description": "Create a json with directory data or create a tree in string",
   "main": "index.js",
   "scripts": {
     "lint-fix": "standard --fix",
