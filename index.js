@@ -21,18 +21,22 @@ const constants = {
 function dirTree (path, options, myLevel) {
   options = defaults(options, {
     level: 20,
-    onlyDir: false
+    onlyDir: false,
+    showHiddenFiles: false
   })
   if (!myLevel) {
     myLevel = 0
   }
-  const { level, exclude, extensions, onlyDir } = options
+  const { level, exclude, extensions, onlyDir, showHiddenFiles } = options
   if (level === myLevel) {
     return
   }
   path = normalize(path)
   const name = getName(path)
   const item = { path, name }
+  if (name.charAt(0) === '.' && !showHiddenFiles) {
+    return false
+  }
   let stats
 
   try { stats = getStats(path) } catch (e) { return false }
@@ -45,13 +49,13 @@ function dirTree (path, options, myLevel) {
   }
 
   item.size = stats.size
-	item.isSymbolicLink = stats.isSymbolicLink()
-	item.createAt = stats.birthtime
-	item.updateAt = stats.mtime
-	if (item.isSymbolicLink) {
-		item.realPath = realPath(path)
-		return item
-	}
+  item.isSymbolicLink = stats.isSymbolicLink()
+  item.createAt = stats.birthtime
+  item.updateAt = stats.mtime
+  if (item.isSymbolicLink) {
+    item.realPath = realPath(path)
+    return item
+  }
   if (stats.isFile() && !onlyDir) {
     const ext = getExt(path)
     if (extensions && isRegExp(extensions) && !extensions.test(ext)) return false
@@ -60,7 +64,7 @@ function dirTree (path, options, myLevel) {
     return item
   }
   if (stats.isDirectory()) {
-		let dirData = getDirData(path)
+    let dirData = getDirData(path)
     if (dirData === null) return false
     const level = myLevel + 1
     item.children = dirData
@@ -78,41 +82,46 @@ function handleFatalError (err) {
   process.exit(1)
 }
 
-function createTree(children, prefix) {
+function createTree (children, prefix, option) {
   let tree = ''
   const max = children.length - 1
   children.forEach(({ type, name, children, isSymbolicLink, realPath }, index) => {
     const isDirectory = type === constants.DIRECTORY
     const isFile = type === constants.FILE
     let line
-    if (name.charAt(0) == '.') {
-      return;
+    if (name.charAt(0) === '.' && !option.showHiddenFiles) {
+      return
     }
     if (index === max) {
       line = '└── ' + name + '\n'
       if (isDirectory) {
         tree += prefix + chalk.green(line)
-        return tree += createTree(children , prefix + '    ');
+        tree += createTree(children, prefix + '    ', option)
+        return
       }
       if (isSymbolicLink) {
-        line = '└── ' + chalk.blue(name) + ' --> ' + chalk.blue(realPath) +  '\n'
-        return tree += line
+        line = '└── ' + chalk.blue(name) + ' --> ' + chalk.blue(realPath) + '\n'
+        tree += line
+        return
       }
-      if(isFile) {
-        return tree += prefix + chalk.white(line)
+      if (isFile) {
+        tree += prefix + chalk.white(line)
+        return
       }
-      return tree += line
+      return
     }
     line = '├── ' + name + '\n'
     if (isSymbolicLink) {
       line = '├── ' + name + chalk.green(' ──> ') + chalk.cyan(realPath) + '\n'
-      return tree += prefix + chalk.cyanBright(line)
+      tree += prefix + chalk.cyanBright(line)
+      return
     }
     if (isDirectory) {
       tree += prefix + chalk.green(line)
-      return tree += createTree(children, prefix + '│   ');
+      tree += createTree(children, prefix + '│   ', option)
+      return
     }
-    return tree += prefix + chalk.white(line)
+    tree += prefix + chalk.white(line)
   })
   return tree
 }
@@ -120,7 +129,7 @@ function createTree(children, prefix) {
 function showTree (path, option) {
   const dirJson = dirTree(path, option)
   let tree = `${chalk.green(dirJson.name)}` + '\n'
-  return tree + createTree(dirJson.children, ' ')
+  return tree + createTree(dirJson.children, ' ', option)
 }
 
 process.on('uncaughtException', handleFatalError)

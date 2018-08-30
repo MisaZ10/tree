@@ -32,7 +32,7 @@ function normalize (fullPath) {
 function join (fullPath, child) {
   return path.join(fullPath, child)
 }
-function realPath(fullPath) {
+function realPath (fullPath) {
   return fs.realpathSync(fullPath)
 }
 module.exports = {
