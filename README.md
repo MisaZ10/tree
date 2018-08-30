@@ -2,7 +2,7 @@
 You can generate a json
 ```
 { 
-	path: '/path/tree-directory/test/levels',
+  path: '/path/tree-directory/test/levels',
   name: 'levels',
   size: 139,
   isSymbolicLink: false,
