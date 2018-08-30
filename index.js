@@ -81,7 +81,7 @@ function handleFatalError (err) {
 function createTree(children, prefix) {
   let tree = ''
   const max = children.length - 1
-  children.forEach(({ type, name, children }, index) => {
+  children.forEach(({ type, name, children, isSymbolicLink, realPath }, index) => {
     const isDirectory = type === constants.DIRECTORY
     const isFile = type === constants.FILE
     let line
@@ -94,17 +94,25 @@ function createTree(children, prefix) {
         tree += prefix + chalk.green(line)
         return tree += createTree(children , prefix + '    ');
       }
+      if (isSymbolicLink) {
+        line = '└── ' + chalk.blue(name) + ' --> ' + chalk.blue(realPath) +  '\n'
+        return tree += line
+      }
       if(isFile) {
-        return tree += prefix + chalk.blue(line)
+        return tree += prefix + chalk.white(line)
       }
       return tree += line
     }
     line = '├── ' + name + '\n'
+    if (isSymbolicLink) {
+      line = '├── ' + name + chalk.green(' ──> ') + chalk.cyan(realPath) + '\n'
+      return tree += prefix + chalk.cyanBright(line)
+    }
     if (isDirectory) {
       tree += prefix + chalk.green(line)
       return tree += createTree(children, prefix + '│   ');
     }
-    return tree += prefix + chalk.blue(line)
+    return tree += prefix + chalk.white(line)
   })
   return tree
 }
