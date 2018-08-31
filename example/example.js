@@ -9,7 +9,8 @@ const treeJson = dirTree(path.join(__dirname, 'levels'), {
   onlyDir: true
 })
 const tree = showTree(path.join(__dirname, 'levels'), {
-  showHiddenFiles: true
+  showHiddenFiles: true,
+  extensions: /txt|jpeg/
 })
 console.log(tree)
 console.log(treeJson)

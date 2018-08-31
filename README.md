@@ -7,7 +7,7 @@ You can generate a json
 const {
   dirTree
 } = require('kigi')
-const tree = showTree(path, options)
+const tree = dirTree(path, options)
 console.log(tree)
 
 { 
@@ -70,15 +70,15 @@ console.log(tree)
   ```
 Or you can generate a tree string
 ```
-    const {
+const {
     showTree
-    } = require('kigi')
-    const options = {
+} = require('kigi')
+const options = {
     showHiddenFiles: true,
     extensions: /txt/
-    }
-    const tree = showTree(path, options)
-    console.log(tree)
+}
+const tree = showTree(path, options)
+console.log(tree)
 ```
 ![](tree.jpeg)
 
@@ -95,7 +95,10 @@ options = {
 
 ### The options can change the size of folder !
 
-Try node test/test.js
+Try 
+```
+node example/example.js
+```
 
 ## Todo
 - [ ] Test
