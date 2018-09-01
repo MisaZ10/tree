@@ -33,6 +33,12 @@ async function treeJson (path, options, myLevel) {
   }
   path = normalize(path)
   const name = getName(path)
+  if (exclude) {
+    const excludes = isRegExp(exclude) ? [exclude] : exclude
+    if (excludes.some((exclusion) => exclusion.test(name))) {
+      return false
+    }
+  }
   const item = { path, name }
   if (name.charAt(0) === '.' && !showHiddenFiles) {
     return false
@@ -42,12 +48,6 @@ async function treeJson (path, options, myLevel) {
   try { stats = await getStats(path) } catch (e) {
     if (myLevel === 0) throw e
     return false
-  }
-  if (exclude) {
-    const excludes = isRegExp(exclude) ? [exclude] : exclude
-    if (excludes.some((exclusion) => exclusion.test(name))) {
-      return false
-    }
   }
 
   item.size = stats.size

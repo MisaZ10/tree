@@ -1,5 +1,4 @@
 const test = require('ava')
-// const { spy, createSandbox } = require('sinon')
 const proxyquire = require('proxyquire')
 const utils = require('./fixtures/utils')
 const { tree, treeJson } = proxyquire('../', {
@@ -10,12 +9,12 @@ const constants = {
   DIRECTORY: 'directory',
   FILE: 'file'
 }
-// const { beforeEach, afterEach, serial } = test
+const { serial } = test
 test('tree and treeJson should exist', t => {
   t.truthy(tree, 'Tree string function exist')
   t.truthy(treeJson, 'Tree json functiWon exist')
 })
-test('treeJson should generate a correct tree without options', async t => {
+serial('treeJson should generate a correct tree without options', async t => {
   const json = await treeJson(rootPath)
   const file = json.children[0]
   const dir1 = json.children[1]
