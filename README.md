@@ -1,15 +1,22 @@
-# Kigi -> Tree directory
+# ![](icon.png) Kigi
+Kigi allows you to create a folder structure in the form of json or in the form of a string if you just want a nice way to see it.
+
 ```
  npm i -s kigi
 ```
-You can generate a json
+Json example
 ```
 const {
-  dirTree
+  treeJson
 } = require('kigi')
-const tree = dirTree(path, options)
-console.log(tree)
-
+async function showJson() {
+  const options = {
+    level: 2
+  }
+  const json = await treeJson(path.join(__dirname, 'levels', options)
+  console.log(json)
+}
+showJson()
 { 
   path: '/path/tree-directory/test/levels',
   name: 'levels',
@@ -34,7 +41,7 @@ console.log(tree)
        isSymbolicLink: false,
        createAt: 2018-08-27T23: 09: 37.505Z,
        updateAt: 2018-08-27T23: 09: 37.505Z,
-       children: [Array],
+       children: [],
        type: 'directory'
     },
     { 
@@ -67,18 +74,22 @@ console.log(tree)
   }],
   type: 'directory'
 }
-  ```
-Or you can generate a tree string
+```
+String example
 ```
 const {
-    showTree
+  tree
 } = require('kigi')
-const options = {
+async function showString () {
+  const options = {
     showHiddenFiles: true,
-    extensions: /txt/
+    extensions: /txt|jpeg/
+  }
+  const string = await tree(path.join(__dirname, 'levels'),  options)
+  console.log(string)
 }
-const tree = showTree(path, options)
-console.log(tree)
+
+showString()
 ```
 ![](tree.jpeg)
 
@@ -101,6 +112,6 @@ node example/example.js
 ```
 
 ## Todo
-- [ ] Test
+- [x] Test
 - [ ] More options
 
