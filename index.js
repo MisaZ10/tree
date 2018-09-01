@@ -28,6 +28,7 @@ async function treeJson (path, options, myLevel) {
     myLevel = 0
   }
   const { level, exclude, extensions, onlyDir, showHiddenFiles } = options
+  if (level <= 0) throw new Error('Level invalid should to be > 0')
   if (level === myLevel) {
     return false
   }

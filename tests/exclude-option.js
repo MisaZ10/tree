@@ -19,8 +19,8 @@ serial('treeJson should generate a correct tree with exclude dir-2', async t => 
   const dir1 = json.children[1]
   t.is(json.children.length, 2, '/root-path should to have 2 children')
   t.is(dir1.children.length, 0, '/root-path/dir-1 should to have 0 children')
-  t.truthy(file.type === constants.FILE, 'file1.txt type should to be file')
-  t.truthy(dir1.type === constants.DIRECTORY, '/root-path/dir-1 type should to be directory')
+  t.is(file.type, constants.FILE, 'file1.txt type should to be file')
+  t.is(dir1.type, constants.DIRECTORY, '/root-path/dir-1 type should to be directory')
 })
 serial('treeJson should generate a correct tree with exclude dir-2 and dir-1', async t => {
   const json = await treeJson(rootPath, {
@@ -28,5 +28,5 @@ serial('treeJson should generate a correct tree with exclude dir-2 and dir-1', a
   })
   const file = json.children[0]
   t.is(json.children.length, 1, '/root-path should to have 1 children')
-  t.truthy(file.type === constants.FILE, 'file1.txt type should to be file')
+  t.is(file.type, constants.FILE, 'file1.txt type should to be file')
 })
