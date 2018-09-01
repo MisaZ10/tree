@@ -39,8 +39,10 @@ async function treeJson (path, options, myLevel) {
   }
   let stats
 
-  try { stats = await getStats(path) } catch (e) { return false }
-
+  try { stats = await getStats(path) } catch (e) {
+    if (myLevel === 0) throw e
+    return false
+  }
   if (exclude) {
     const excludes = isRegExp(exclude) ? [exclude] : exclude
     if (excludes.some((exclusion) => exclusion.test(name))) {
