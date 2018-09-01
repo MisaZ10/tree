@@ -18,7 +18,7 @@ const constants = {
   DIRECTORY: 'directory',
   FILE: 'file'
 }
-function dirTree (path, options, myLevel) {
+async function treeJson (path, options, myLevel) {
   options = defaults(options, {
     level: 20,
     onlyDir: false,
@@ -29,7 +29,7 @@ function dirTree (path, options, myLevel) {
   }
   const { level, exclude, extensions, onlyDir, showHiddenFiles } = options
   if (level === myLevel) {
-    return
+    return false
   }
   path = normalize(path)
   const name = getName(path)
@@ -39,7 +39,7 @@ function dirTree (path, options, myLevel) {
   }
   let stats
 
-  try { stats = getStats(path) } catch (e) { return false }
+  try { stats = await getStats(path) } catch (e) { return false }
 
   if (exclude) {
     const excludes = isRegExp(exclude) ? [exclude] : exclude
@@ -54,32 +54,28 @@ function dirTree (path, options, myLevel) {
   item.updateAt = stats.mtime
   if (item.isSymbolicLink) {
     item.realPath = realPath(path)
-    return item
   }
   if (stats.isFile() && !onlyDir) {
     const ext = getExt(path)
     if (extensions && isRegExp(extensions) && !extensions.test(ext)) return false
     item.extension = ext
     item.type = constants.FILE
-    return item
   }
   if (stats.isDirectory()) {
-    let dirData = getDirData(path)
+    let dirData = await getDirData(path)
     if (dirData === null) return false
     const level = myLevel + 1
-    item.children = dirData
-      .map(child => dirTree(join(path, child), options, level))
-      .filter(e => e)
-    item.size = item.children.reduce((prev, child) => prev + child.size, 0)
     item.type = constants.DIRECTORY
-    return item
-  }
-  return false
-}
+    item.children = []
 
-function handleFatalError (err) {
-  console.error(`${chalk.red('[fatal error]')} ${err.message}`)
-  process.exit(1)
+    for (let i = 0; i < dirData.length; i++) {
+      const child = dirData[i]
+      const data = await treeJson(join(path, child), options, level)
+      if (data) item.children.push(data)
+    }
+    item.size = item.children.reduce((prev, child) => prev + child.size, 0)
+  }
+  return item
 }
 
 function createTree (children, prefix, option) {
@@ -126,16 +122,12 @@ function createTree (children, prefix, option) {
   return tree
 }
 
-function showTree (path, option) {
-  const dirJson = dirTree(path, option)
-  let tree = `${chalk.green(dirJson.name)}` + '\n'
-  return tree + createTree(dirJson.children, ' ', option)
+async function tree (path, option) {
+  const { name, children } = await treeJson(path, option)
+  return `${chalk.green(name)}` + '\n' + createTree(children, ' ', option)
 }
 
-process.on('uncaughtException', handleFatalError)
-process.on('unhandledRejection', handleFatalError)
-
 module.exports = {
-  dirTree,
-  showTree
+  treeJson,
+  tree
 }

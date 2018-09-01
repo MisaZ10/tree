@@ -1,16 +1,20 @@
 const path = require('path')
 const {
-  dirTree,
-  showTree
+  tree,
+  treeJson
 } = require('..')
 
-const treeJson = dirTree(path.join(__dirname, 'levels'), {
-  level: 5,
-  onlyDir: true
-})
-const tree = showTree(path.join(__dirname, 'levels'), {
-  showHiddenFiles: true,
-  extensions: /txt|jpeg/
-})
-console.log(tree)
-console.log(treeJson)
+async function showExamples () {
+  const json = await treeJson(path.join(__dirname, 'levels'), {
+    level: 5,
+    onlyDir: true
+  })
+  const string = await tree(path.join(__dirname, 'levels'), {
+    showHiddenFiles: true,
+    extensions: /txt|jpeg/
+  })
+  console.log(json)
+  console.log(string)
+}
+
+showExamples()
