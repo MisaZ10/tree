@@ -57,7 +57,8 @@ async function treeJson (path, options, myLevel) {
   if (item.isSymbolicLink) {
     item.realPath = realPath(path)
   }
-  if (stats.isFile() && !onlyDir) {
+  if (stats.isFile()) {
+    if (onlyDir) return false
     const ext = getExt(path)
     if (ext.length > 0 && extensions && isRegExp(extensions) && !extensions.test(ext)) return false
     item.extension = ext
