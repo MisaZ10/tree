@@ -57,7 +57,7 @@ async function treeJson (path, options, myLevel) {
   }
   if (stats.isFile() && !onlyDir) {
     const ext = getExt(path)
-    if (extensions && isRegExp(extensions) && !extensions.test(ext)) return false
+    if (ext.length > 0 && extensions && isRegExp(extensions) && !extensions.test(ext)) return false
     item.extension = ext
     item.type = constants.FILE
   }
